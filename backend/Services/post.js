@@ -7,7 +7,7 @@ exports.getAllPost = () =>
     .sort({ updatedAt: -1 })
     .populate({ path: "userid", select: ["firstname", "lastname"] });
 
-exports.getAllPostByUser = (userid) =>
+exports.getAllPostByUser = (userid, page, pagesize) =>
   Post.aggregate([
     {
       $lookup: {
@@ -49,6 +49,34 @@ exports.getAllPostByUser = (userid) =>
         likeIndex: 0,
       },
     },
+    { $sort: { updatedAt: -1 } },
+    {
+      $skip: pagesize * (page - 1),
+    },
+    {
+      $limit: parseInt(pagesize),
+    },
   ]);
 
+exports.countAllPost = () => Post.countDocuments();
+
 exports.createPost = (post, userid) => Post.create({ ...post, userid });
+
+exports.PostService = (postid) => {
+  let id = postid;
+
+  const returnObj = { findOnePost, deletePost, updatePost };
+  function findOnePost() {
+    return Post.findById(id);
+  }
+
+  function deletePost() {
+    return Post.findByIdAndDelete(id);
+  }
+
+  function updatePost(payload) {
+    return Post.findByIdAndUpdate(id, { $set: payload }, { new: true });
+  }
+
+  return returnObj;
+};
