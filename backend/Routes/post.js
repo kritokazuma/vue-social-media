@@ -5,7 +5,7 @@ const fileUpload = require("../Utils/middleware/fileupload");
 
 router
   .route("/")
-  .get(Authorize, PostController.getPost) //TODO: need to add pagination
+  .get(PostController.getPost) //TODO: need to add pagination
   .post(Authorize, fileUpload, PostController.createPost);
 
 router

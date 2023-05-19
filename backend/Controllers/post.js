@@ -12,7 +12,7 @@ exports.getPost = async (req, res, next) => {
     const user = req.user;
     const pagesize = +req.query.pagesize;
     const page = +req.query.page;
-    const posts = await getAllPostByUser(user.id, page, pagesize);
+    const posts = await getAllPostByUser(user?.id, page, pagesize);
 
     const count = await countAllPost();
 
@@ -36,6 +36,8 @@ exports.getPost = async (req, res, next) => {
 exports.createPost = async (req, res, next) => {
   try {
     const body = req.body;
+    console.log(body);
+    console.log(req.file);
     const userid = req.user.id;
     let imagePath = "";
     if (req.file) {
@@ -47,8 +49,10 @@ exports.createPost = async (req, res, next) => {
       throw new AppError("Please input description", 400);
     }
     const post = await createPost({ ...body, imageurl: imagePath }, userid);
+    await post.populate({ path: "userid", select: ["firstname", "lastname"] });
     return res.status(200).json({ data: post });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
@@ -79,6 +83,7 @@ exports.updatePost = async (req, res, next) => {
     const body = req.body;
     const userid = req.user.id;
     const postid = req.params.id;
+    console.log(req.file);
     if (req.file) {
       let url = req.protocol + "://" + req.get("host");
       url = url.endsWith("/") ? url : url + "/";
@@ -93,6 +98,8 @@ exports.updatePost = async (req, res, next) => {
       throw new AppError("You are not the owner of post", 401);
     }
     const post = await postService.updatePost(body);
+
+    await post.populate({ path: "userid", select: ["firstname", "lastname"] });
 
     return res.status(201).json({ data: post });
   } catch (error) {

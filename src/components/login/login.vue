@@ -16,10 +16,7 @@
             <a-input v-model:value="formState.username" />
           </a-form-item>
 
-          <a-form-item
-            label="Password"
-            name="password"
-          >
+          <a-form-item label="Password" name="password">
             <a-input-password v-model:value="formState.password" />
           </a-form-item>
 
@@ -27,9 +24,8 @@
             <a-button type="primary" html-type="submit">Login</a-button>
           </a-form-item>
         </a-form>
-        <a-form-item :wrapper-col="{offset: 8, span: 16}"> 
-
-            <router-link to="/register">Haven't account? Register.</router-link>
+        <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+          <router-link to="/register">Haven't account? Register.</router-link>
         </a-form-item>
       </a-card>
     </div>
@@ -37,6 +33,13 @@
 </template>
 <script setup>
 import { reactive } from "vue";
+import { useUserStore } from "../../Stores/user";
+import {useRouter} from 'vue-router'
+
+const router = useRouter();
+
+const userStore = useUserStore();
+
 const formState = reactive({
   username: "",
   password: "",
@@ -51,7 +54,7 @@ async function usernameValidator(_rule, value) {
   if (!value) {
     return Promise.reject("Please input the username");
   }
-  if (value.length < 6) {
+  if (value.length < 1) {
     return Promise.reject("Username must at least six");
   }
   return Promise.resolve();
@@ -69,6 +72,7 @@ async function passValidator(_rule, value) {
 
 const onFinish = (values) => {
   console.log("Success:", values);
+  userStore.login(values).then(() => router.push('/'));
 };
 
 const onFinishFailed = (errorInfo) => {

@@ -1,7 +1,6 @@
 const {
   comparePassword,
   hashPassword,
-  findUserById,
   findUserByUsername,
   generateToken,
   expiresDuration,
@@ -17,7 +16,7 @@ exports.login = async (req, res, next) => {
       throw new AppError("Please define a username", 400);
     }
 
-    if (!body.password) {       
+    if (!body.password) {
       throw new AppError(400, "Please define a password", 400);
     }
 
@@ -73,5 +72,3 @@ exports.register = async (req, res, next) => {
     next(error);
   }
 };
-
-

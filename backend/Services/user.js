@@ -1,7 +1,7 @@
 const User = require("../Models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const yup = require('yup')
+const yup = require("yup");
 
 const config = require("../Config/config.json");
 
@@ -17,13 +17,13 @@ exports.findUserById = (userid) => User.findById(userid);
 
 exports.findUserByUsername = (username) => User.findOne({ username });
 
-exports.createUser = (user) => User.create(user)
-  
+exports.createUser = (user) => User.create(user);
+
 exports.generateToken = (user) =>
   jwt.sign(
     {
       id: user._id,
-      name: user.fname + "" + user.lname,
+      name: user.firstname + " " + user.lastname,
       email: user.email,
       profileurl: user.profileurl,
     },
@@ -36,5 +36,5 @@ exports.registerValidate = yup.object({
   email: yup.string().email().required("Please define an email"),
   firstname: yup.string().required("Please define a fistname"),
   lastname: yup.string().required("Please define a lastname"),
-  password: yup.string().min(6).required("Please define a password")
-})
+  password: yup.string().min(6).required("Please define a password"),
+});

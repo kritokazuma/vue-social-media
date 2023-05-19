@@ -50,8 +50,8 @@
             <a-input-password v-model:value="formState.password" />
           </a-form-item>
 
-          <a-form-item label="Confirm Password" name="confirmpassword">
-            <a-input-password v-model:value="formState.confirmpassword" />
+          <a-form-item label="Confirm Password" name="confirmPassword">
+            <a-input-password v-model:value="formState.confirmPassword" />
           </a-form-item>
 
           <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
@@ -67,19 +67,23 @@
 </template>
 <script setup>
 import { reactive } from "vue";
+import { useUserStore } from "../../Stores/user";
+
+const userStore = useUserStore();
+
 const formState = reactive({
   username: "",
   password: "",
   firstname: "",
   lastname: "",
   email: "",
-  confirmpassword: "",
+  confirmPassword: "",
 });
 
 const rules = {
   username: [{ required: true, validator: usernameValidator }],
   password: [{ required: true, validator: passValidator }],
-  confirmpassword: [{ required: true, validator: confirmPasswordValidator }],
+  confirmPassword: [{ required: true, validator: confirmPasswordValidator }],
   email: [{ required: true, type: "email", message: "Please input the email" }],
 };
 
@@ -121,6 +125,7 @@ async function passValidator(_rule, value) {
 
 const onFinish = (values) => {
   console.log("Success:", values);
+  userStore.register(values)
 };
 
 const onFinishFailed = (errorInfo) => {
